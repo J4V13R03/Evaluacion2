@@ -16,6 +16,10 @@ public class Variante {
     @Column(nullable = false)
     private Integer costoAdicional;
 
+    @Column(name = "Tipo_Compatible")
+    private String tipoCompatible;
+
+
     public Variante() {
     }
 
@@ -41,5 +45,12 @@ public class Variante {
 
     public void setCostoAdicional(Integer costoAdicional) {
         this.costoAdicional = costoAdicional;
+    }
+
+    public String getTipoCompatible() { 
+        return tipoCompatible; 
+    }
+    public void setTipoCompatible(String tipoCompatible) { 
+        this.tipoCompatible = tipoCompatible; 
     }
 }

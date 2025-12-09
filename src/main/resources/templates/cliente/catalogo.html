@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Catálogo - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a th:href="@{/}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="ph-bold ph-armchair" style="font-size: 2rem; color: var(--color-primary);"></i>
+                <h1>Catálogo Virtual</h1>
+            </a>
+        </div>
+        <a th:href="@{/}" class="btn btn-outline" style="font-size: 0.9rem;">Volver al Inicio</a>
+    </header>
+
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2>Compra tu mueble a gusto</h2>
+            <p>Selecciona el modelo base y personalízalo con nuestros acabados y accesorios.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
+            
+            <div class="card">
+                <h3 style="border-bottom: none; margin-bottom: 1.5rem;">1. Personaliza tu Pedido</h3>
+                
+                <form id="form-item">
+                    <div class="form-group">
+                        <label>¿Qué mueble buscas?</label>
+                        <select id="select-mueble" class="form-control" style="width: 100%; padding: 1rem; font-size: 1rem;">
+                            <option value="" disabled selected>-- Seleccionar Modelo --</option>
+                            <option th:each="m : ${muebles}" 
+                                    th:if="${m.estado == 'activo'}"
+                                    th:value="${m.idMueble}" 
+                                    th:data-tipo="${m.tipo}"
+                                    th:data-precio="${m.precioBase}"
+                                    th:text="${m.nombreMueble} + ' - $' + ${m.precioBase}"></option>
+                        </select>
+                    </div>
+
+                    <div id="bloque-variantes" class="form-group" style="display: none; background: var(--color-bg); padding: 1.5rem; border-radius: 12px;">
+                        <label style="margin-bottom: 1rem; display: block;">2. Elige tus Extras (Opcional)</label>
+                        
+                        <div class="variantes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+                            <div th:each="v : ${variantes}" 
+                                 class="variante-item" 
+                                 th:data-compatible="${v.tipoCompatible}">
+                                
+                                <label style="display: flex; align-items: center; gap: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--color-accent); cursor: pointer; transition: all 0.2s;">
+                                    <input type="checkbox" name="variantes" th:value="${v.idVariante}" th:data-precio="${v.costoAdicional}" style="width: auto;">
+                                    <div style="line-height: 1.2;">
+                                        <span th:text="${v.nombre}" style="display: block; font-weight: 600;">Nombre</span>
+                                        <span th:text="'+ $' + ${v.costoAdicional}" style="font-size: 0.85rem; color: var(--color-exito);">+ $0</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <p id="msg-sin-variantes" style="display: none; text-align: center; color: #888; margin-top: 10px;">No hay extras disponibles para este modelo.</p>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label>Cantidad</label>
+                            <input type="number" id="input-cantidad" value="1" min="1" style="padding: 0.8rem;">
+                        </div>
+                        <button type="button" onclick="agregarAlCarrito()" class="btn btn-primary" style="flex: 2; justify-content: center; margin-top: 1.8rem;">
+                            Agregar al Carrito <i class="ph-bold ph-shopping-cart"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card card-carrito">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.3); margin-bottom: 1rem; padding-bottom: 0.5rem;">
+                    <h2 style="color: white; margin: 0; font-size: 1.5rem;">Tu Carrito</h2>
+                    <span style="background: rgba(0,0,0,0.2); padding: 2px 10px; border-radius: 10px; font-size: 0.9rem;">
+                        <span id="cart-count">0</span> items
+                    </span>
+                </div>
+                
+                <div id="carrito-lista" style="min-height: 100px; margin-bottom: 1.5rem;">
+                    <p style="opacity: 0.7; text-align: center; margin-top: 2rem; color: white;">Tu carrito está vacío.</p>
+                </div>
+
+                <div style="text-align: right; margin-bottom: 1rem; font-size: 1.2rem;">
+                    <span>Total Estimado: </span>
+                    <strong id="cart-total">$0</strong>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 1rem;">
+                    <button onclick="procesarCompra()" class="btn btn-pagar">
+                        Pagar y Confirmar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Filtro
+        const selectMueble = document.getElementById('select-mueble');
+        const bloqueVariantes = document.getElementById('bloque-variantes');
+        const listaVariantes = document.querySelectorAll('.variante-item');
+        const msgSinVariantes = document.getElementById('msg-sin-variantes');
+
+        selectMueble.addEventListener('change', function() {
+            const tipoMueble = this.options[this.selectedIndex].getAttribute('data-tipo');
+            bloqueVariantes.style.display = 'block';
+            let visibles = 0;
+
+            listaVariantes.forEach(div => {
+                const tipoCompatible = div.getAttribute('data-compatible');
+                const input = div.querySelector('input');
+                if (!tipoCompatible || tipoCompatible === 'null' || tipoCompatible === '' || tipoCompatible === tipoMueble) {
+                    div.style.display = 'block';
+                    visibles++;
+                } else {
+                    div.style.display = 'none';
+                    input.checked = false;
+                }
+            });
+
+            if (visibles === 0) msgSinVariantes.style.display = 'block';
+            else msgSinVariantes.style.display = 'none';
+        });
+
+        // Carrito
+        let carritoItems = [];
+
+        function agregarAlCarrito() {
+            const muebleId = selectMueble.value;
+            const optionSelected = selectMueble.options[selectMueble.selectedIndex];
+            
+            if (!muebleId) { alert("Selecciona un mueble."); return; }
+
+            const muebleTexto = optionSelected.text.split(' - $')[0];
+            const precioBase = parseInt(optionSelected.getAttribute('data-precio'));
+            const cantidad = parseInt(document.getElementById('input-cantidad').value);
+
+
+            const checkboxes = document.querySelectorAll('input[name="variantes"]:checked');
+            const varianteIds = [];
+            let costoExtras = 0;
+            let extrasNombres = [];
+
+            checkboxes.forEach(cb => {
+                varianteIds.push(parseInt(cb.value));
+                costoExtras += parseInt(cb.getAttribute('data-precio'));
+                let nombreExtra = cb.parentElement.querySelector('span').innerText;
+                extrasNombres.push(nombreExtra);
+            });
+
+            const precioUnitarioFinal = precioBase + costoExtras;
+            const subtotal = precioUnitarioFinal * cantidad;
+
+            const item = {
+                muebleId: parseInt(muebleId),
+                cantidad: cantidad,
+                varianteIds: varianteIds,
+                desc: muebleTexto + (extrasNombres.length > 0 ? ` (+ ${extrasNombres.length} extras)` : ""),
+                subtotal: subtotal
+            };
+
+            carritoItems.push(item);
+            renderizarCarrito();
+            
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('input-cantidad').value = 1;
+        }
+
+        function renderizarCarrito() {
+            const contenedor = document.getElementById('carrito-lista');
+            const contador = document.getElementById('cart-count');
+            const totalDisplay = document.getElementById('cart-total');
+            
+            if (carritoItems.length === 0) {
+                contenedor.innerHTML = '<p style="text-align: center; opacity: 0.7; margin-top: 2rem; color: white;">Tu carrito está vacío.</p>';
+                contador.innerText = "0";
+                totalDisplay.innerText = "$0";
+                return;
+            }
+
+            let html = '<ul style="list-style:none; padding:0;">';
+            let granTotal = 0;
+
+            carritoItems.forEach((item, index) => {
+                granTotal += item.subtotal;
+                html += `
+                    <li class="carrito-item-style">
+                        <div>
+                            <div style="font-weight: 600; color: white;">${item.desc}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.9; color: #EEE;">Cant: ${item.cantidad} | Subtotal: $${item.subtotal}</div>
+                        </div>
+                        <button onclick="eliminarItem(${index})" style="background:none; border:none; color:white; cursor:pointer; opacity: 0.8; padding: 5px;">
+                            <i class="ph-bold ph-trash" style="font-size: 1.2rem;"></i>
+                        </button>
+                    </li>`;
+            });
+            html += '</ul>';
+            
+            contenedor.innerHTML = html;
+            contador.innerText = carritoItems.length;
+            totalDisplay.innerText = "$" + granTotal;
+        }
+
+        function eliminarItem(index) {
+            carritoItems.splice(index, 1);
+            renderizarCarrito();
+        }
+
+        // Procesar compra
+        async function procesarCompra() {
+            if (carritoItems.length === 0) { alert("El carrito está vacío."); return; }
+
+            const payload = {
+                items: carritoItems.map(({ muebleId, cantidad, varianteIds }) => ({ muebleId, cantidad, varianteIds }))
+            };
+
+            try {
+                // 1. Crear Cotización
+                const resCot = await fetch('/cotizaciones', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!resCot.ok) throw new Error("Error al procesar la cotización");
+                const cotizacion = await resCot.json();
+
+                // 2. Confirmar Venta Final
+                const confirmar = confirm(`El total final es $${cotizacion.totalCalculado}.\n\n¿Desea confirmar el pago y finalizar la compra?`);
+                
+                if (confirmar) {
+                    const resVenta = await fetch(`/cotizaciones/${cotizacion.idCotizacion}/confirmar-venta`, { 
+                        method: 'POST' 
+                    });
+                    
+                    if (resVenta.ok) {
+                        alert("¡Compra Exitosa! Muchas gracias.");
+                        window.location.href = "/"; // Volver al inicio
+                    } else {
+                        const errorMsg = await resVenta.text();
+                        alert("No se pudo completar la venta:\n" + errorMsg);
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Ocurrió un error de comunicación con el servidor.");
+            }
+        }
+    </script>
+
+</body>
+</html>

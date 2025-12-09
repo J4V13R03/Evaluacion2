@@ -3,6 +3,9 @@ package com.IngSoft.Evaluacion2.Cotizacion;
 import com.IngSoft.Evaluacion2.Mueble.Mueble;
 import com.IngSoft.Evaluacion2.Variante.Variante;
 import jakarta.persistence.*;
+// Agregamos esta importación para arreglar el error
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +26,7 @@ public class CotizacionItem {
     // muchos Items pertenecen a una Cotizacion
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cotizacion_id", nullable = false)
+    @JsonIgnore
     private Cotizacion cotizacion;
 
     // cada Item esta asociado a un mueble

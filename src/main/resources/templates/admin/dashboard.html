@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Administración - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a th:href="@{/}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="ph-bold ph-armchair" style="font-size: 2rem; color: var(--color-primary);"></i>
+                <h1>Panel de Gestión</h1>
+            </a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right; line-height: 1.2;">
+                <span style="display: block; font-weight: 700; color: var(--color-primary);">Gustavo</span>
+                <span style="font-size: 0.85rem; color: var(--color-text-muted);">Gerente</span>
+            </div>
+            <a th:href="@{/}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                <i class="ph-bold ph-sign-out"></i> Salir
+            </a>
+        </div>
+    </header>
+
+    <div class="main-container" style="align-items: flex-start; padding-top: 4rem;">
+        <div class="container">
+            <h2>Panel de Control</h2>
+            <p style="margin-bottom: 2rem;">Seleccione una opción para administrar el inventario y las ventas.</p>
+
+            <div class="menu-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem;">
+                <a th:href="@{/admin/muebles}" class="home-card-btn"> 
+                    <div class="icon-circle">
+                        <i class="ph-duotone ph-chair"></i>
+                    </div>
+                    <div class="btn-text">
+                        <h3>Muebles</h3>
+                        <span>Crear, Editar y Quitar Mueble</span>
+                    </div>
+                    <i class="ph-bold ph-caret-right arrow-indicator"></i>
+                </a>
+
+                <a th:href="@{/admin/variantes}" class="home-card-btn">
+                    <div class="icon-circle">
+                        <i class="ph-duotone ph-paint-brush-broad"></i>
+                    </div>
+                    <div class="btn-text">
+                        <h3>Variantes</h3>
+                        <span>Extras</span>
+                    </div>
+                    <i class="ph-bold ph-caret-right arrow-indicator"></i>
+                </a>
+
+                <a th:href="@{/admin/ventas}" class="home-card-btn">
+                    <div class="icon-circle">
+                        <i class="ph-duotone ph-receipt"></i>
+                    </div>
+                    <div class="btn-text">
+                        <h3>Historial Ventas</h3>
+                        <span>Registro de ventas</span>
+                    </div>
+                    <i class="ph-bold ph-caret-right arrow-indicator"></i>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

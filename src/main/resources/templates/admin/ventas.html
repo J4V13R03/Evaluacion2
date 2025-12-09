@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Historial de Ventas - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="container" style="max-width: 1000px;">
+        <div style="margin-bottom: 2rem;">
+            <a th:href="@{/admin}" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                <i class="ph-bold ph-arrow-left"></i> Volver al Panel
+            </a>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2><i class="ph-duotone ph-receipt"></i> Historial de Ventas</h2>
+                <span class="btn btn-secondary" style="cursor: default;">
+                    Total: <span th:text="${#lists.size(ventas)}">0</span>
+                </span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Cotización</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Total ($)</th>
+                            <th>Detalle de Productos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${ventas}">
+                            <td th:text="'#' + ${v.idCotizacion}">#1</td>
+                            
+                            <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                            
+                            <td>
+                                <span th:text="${v.estado}"
+                                      th:style="${v.estado == 'VENDIDO' ? 'color: var(--color-exito); font-weight: bold;' : 'color: #888;'}">
+                                    PENDIENTE
+                                </span>
+                            </td>
+                            
+                            <td th:text="'$' + ${v.totalCalculado}" style="font-weight: 600;">$150000</td>
+                            
+                            <td>
+                                <ul style="margin: 0; padding-left: 1rem; font-size: 0.9rem; color: var(--color-text);">
+                                    <li th:each="item : ${v.items}">
+                                        <span th:text="${item.cantidad} + 'x ' + ${item.mueble.nombreMueble}"></span>
+                                        <span th:if="${!#lists.isEmpty(item.variantes)}" style="color: var(--color-text-muted); font-size: 0.85rem;">
+                                            (Con extras)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(ventas)}">
+                            <td colspan="5" style="text-align: center; padding: 3rem; color: #888;">
+                                <i class="ph-duotone ph-receipt" style="font-size: 2rem; display: block; margin: 0 auto 10px;"></i>
+                                No se han registrado ventas todavía.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión Variante - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="container" style="max-width: 600px;">
+        <div style="margin-bottom: 2rem;">
+            <a th:href="@{/admin/variantes}" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                <i class="ph-bold ph-arrow-left"></i> Volver
+            </a>
+        </div>
+
+        <div class="card">
+            <h2 th:text="${variante.idVariante == null ? 'Nueva Variante' : 'Editar Variante'}">Formulario</h2>
+            <p style="margin-bottom: 2rem; color: #666; font-size: 0.9rem;">
+                Estas opciones aumentarán el precio final del mueble en el cotizador.
+            </p>
+            
+            <form th:action="@{/admin/variantes/guardar}" th:object="${variante}" method="post">
+                <input type="hidden" th:field="*{idVariante}" />
+
+                <div class="form-group">
+                    <label>Nombre de la Variante</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: Barniz Premium, Ruedas de Goma" />
+                </div>
+
+                <div class="form-group">
+                    <label>Costo Adicional ($CLP)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 10px; top: 10px; color: #888;">$</span>
+                        <input type="number" th:field="*{costoAdicional}" required min="0" step="100" style="padding-left: 25px;" placeholder="15000" />
+                    </div>
+                    <small style="color: var(--color-text-muted); display: block; margin-top: 5px;">
+                        Se sumará al precio base del mueble.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Mueble Compatible (Opcional)</label>
+                    <select th:field="*{tipoCompatible}">
+                        <option value="">-- Universal (Para todos) --</option>
+                        <option value="Silla">Silla</option>
+                        <option value="Sillón">Sillón</option>
+                        <option value="Mesa">Mesa</option>
+                        <option value="Estante">Estante</option>
+                        <option value="Cajón">Cajón</option>
+                    </select>
+                    <small style="color: #888; display: block; margin-top: 5px;">
+                        Al seleccionar, solo se vera para ese tipo de mueble :3
+                    </small>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: right;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ph-bold ph-floppy-disk"></i> Guardar Variante
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

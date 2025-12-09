@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Muebles Hermanos S.A.</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <i class="ph-duotone ph-armchair brand-icon"></i>
+            <h1>Mueblería Hermanos</h1>
+        </div>
+        </header>
+
+    <div class="main-container">
+        <div class="welcome-section">
+            <h2>Bienvenido a Hermanos S.A</h2>
+            <p>Seleccione su perfil para comenzar.</p>
+
+            <div class="home-menu-grid">
+                
+                <a th:href="@{/catalogo}" class="home-card-btn">
+                    <div class="icon-circle">
+                        <i class="ph-duotone ph-storefront"></i>
+                    </div>
+                    <div class="btn-text">
+                        <h3>Catálogo</h3>
+                        <span>Vista Clientes</span>
+                    </div>
+                    <i class="ph-bold ph-arrow-right arrow-indicator"></i>
+                </a>
+
+                <a th:href="@{/admin}" class="home-card-btn admin">
+                    <div class="icon-circle">
+                        <i class="ph-duotone ph-user-gear"></i>
+                    </div>
+                    <div class="btn-text">
+                        <h3>Administración</h3>
+                        <span>Panel de Gestión</span>
+                    </div>
+                    <i class="ph-bold ph-arrow-right arrow-indicator"></i>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

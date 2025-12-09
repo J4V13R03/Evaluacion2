@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Variantes - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="container" style="max-width: 900px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a th:href="@{/admin}" class="btn btn-outline" style="padding: 0.5rem;"><i class="ph-bold ph-arrow-left"></i></a>
+                <h2>Gestión de Variantes</h2>
+            </div>
+            <a th:href="@{/admin/variantes/nuevo}" class="btn btn-primary">
+                <i class="ph-bold ph-plus"></i> Nueva Variante
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre de la Variante</th>
+                            <th>Costo Adicional</th>
+                            <th>Acciones</th> </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${variantes}">
+                            <td th:text="${v.idVariante}">1</td>
+                            <td th:text="${v.nombre}" style="font-weight: 600;">Barniz</td>
+                            <td style="color: var(--color-exito); font-weight: 700;">
+                                + <span th:text="'$' + ${v.costoAdicional}">$20000</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <a th:href="@{/admin/variantes/editar/{id}(id=${v.idVariante})}" 
+                                       class="btn btn-outline" style="padding: 0.4rem;" title="Editar">
+                                        <i class="ph-bold ph-pencil-simple"></i>
+                                    </a>
+                                    <a th:href="@{/admin/variantes/eliminar/{id}(id=${v.idVariante})}" 
+                                       class="btn btn-outline" 
+                                       style="padding: 0.4rem; color: var(--color-error); border-color: var(--color-error);" 
+                                       title="Eliminar"
+                                       onclick="return confirm('¿Eliminar esta variante?');">
+                                        <i class="ph-bold ph-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(variantes)}">
+                            <td colspan="4" style="text-align: center; padding: 2rem; color: #888;">
+                                No hay variantes registradas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

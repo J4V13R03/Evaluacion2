@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión Mueble - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="container" style="max-width: 700px;">
+        <div style="margin-bottom: 2rem;">
+            <a th:href="@{/admin/muebles}" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                <i class="ph-bold ph-arrow-left"></i> Volver
+            </a>
+        </div>
+
+        <div class="card">
+            <h2 th:text="${mueble.idMueble == null ? 'Nuevo Mueble' : 'Editar Mueble'}">Formulario</h2>
+            
+            <form th:action="@{/admin/muebles/guardar}" th:object="${mueble}" method="post">
+                <input type="hidden" th:field="*{idMueble}" />
+                <input type="hidden" th:field="*{estado}" /> 
+
+                <div class="form-group">
+                    <label>Nombre del Mueble</label>
+                    <input type="text" th:field="*{nombreMueble}" required placeholder="Ej: Silla de Roble Colonial" />
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select th:field="*{tipo}" required>
+                            <option value="Silla">Silla</option>
+                            <option value="Sillón">Sillón</option>
+                            <option value="Mesa">Mesa</option>
+                            <option value="Estante">Estante</option>
+                            <option value="Cajón">Cajón</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamaño</label>
+                        <select th:field="*{tamano}" required>
+                            <option value="Pequeño">Pequeño</option>
+                            <option value="Mediano">Mediano</option>
+                            <option value="Grande">Grande</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Material</label>
+                    <input type="text" th:field="*{material}" required placeholder="Ej: Roble, Pino, Melamina" />
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Precio Base ($CLP)</label>
+                        <input type="number" th:field="*{precioBase}" required min="0" step="100" />
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Inicial</label>
+                        <input type="number" th:field="*{stock}" required min="0" />
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: right;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ph-bold ph-floppy-disk"></i> Guardar Mueble
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

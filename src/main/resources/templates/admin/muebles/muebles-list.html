@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inventario - Mueblería Hermanos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a th:href="@{/admin}" class="btn btn-outline" style="padding: 0.5rem;"><i class="ph-bold ph-arrow-left"></i></a>
+                <h2>Inventario de Muebles</h2>
+            </div>
+            <a th:href="@{/admin/muebles/nuevo}" class="btn btn-primary">
+                <i class="ph-bold ph-plus"></i> Nuevo Mueble
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Material</th>
+                            <th>Tamaño</th>
+                            <th>Precio Base</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${muebles}" th:style="${m.estado == 'inactivo' ? 'opacity: 0.6; background: #f9f9f9;' : ''}">
+                            
+                            <td th:text="${m.idMueble}">1</td>
+                            <td th:text="${m.nombreMueble}">Silla</td>
+                            <td th:text="${m.tipo}">Silla</td>
+                            <td th:text="${m.material}">Madera</td>
+                            <td th:text="${m.tamano}">Grande</td>
+                            <td th:text="'$' + ${m.precioBase}">$15000</td>
+                            
+                            <td th:text="${m.stock}" 
+                                th:style="${m.stock == 0 and m.estado == 'activo' ? 'color: #d32f2f; font-weight: bold;' : ''}">
+                                10
+                            </td>
+                            
+                            <td>
+                                <span th:if="${m.estado == 'inactivo'}" 
+                                    class="status-badge"
+                                    style="background-color: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb;">
+                                    Inactivo
+                                </span>
+
+                                <span th:if="${m.estado == 'activo' and m.stock == 0}" 
+                                    class="status-badge status-agotado">
+                                    Agotado
+                                </span>
+
+                                <span th:if="${m.estado == 'activo' and m.stock > 0}" 
+                                    class="status-badge status-activo">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <a th:href="@{/admin/muebles/editar/{id}(id=${m.idMueble})}" class="btn btn-secondary" style="padding: 0.4rem;" title="Editar">
+                                        <i class="ph-bold ph-pencil-simple"></i>
+                                    </a>
+                                    <a th:if="${m.estado == 'activo'}" 
+                                    th:href="@{/admin/muebles/desactivar/{id}(id=${m.idMueble})}" 
+                                    class="btn btn-outline" style="padding: 0.4rem; border-color: var(--color-error); color: var(--color-error);" 
+                                    title="Desactivar"
+                                    onclick="return confirm('¿Seguro que desea desactivar este mueble?');">
+                                        <i class="ph-bold ph-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(muebles)}">
+                            <td colspan="9" style="text-align: center; padding: 2rem;">No hay muebles registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

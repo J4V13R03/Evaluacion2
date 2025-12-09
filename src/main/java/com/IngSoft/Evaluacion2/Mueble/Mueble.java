@@ -1,10 +1,13 @@
 package com.IngSoft.Evaluacion2.Mueble;
+
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "mueble")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Mueble {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMueble;
@@ -30,11 +33,11 @@ public class Mueble {
     @Column(nullable = false)
     private String material;
 
+    //  Getters y Setters
     
     public Mueble() {
     }
 
-    //Getters y Setters
     public Long getIdMueble() { return idMueble; }
     public void setIdMueble(Long idMueble) { this.idMueble = idMueble; }
     public String getNombreMueble() { return nombreMueble; }
