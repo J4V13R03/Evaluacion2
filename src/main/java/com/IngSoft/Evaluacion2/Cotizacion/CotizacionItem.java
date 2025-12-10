@@ -21,7 +21,7 @@ public class CotizacionItem {
     private Integer cantidad;
 
     @Column(nullable = false)
-    private Integer precioItemCalculado;
+    private Long precioItemCalculado;
 
     // muchos Items pertenecen a una Cotizacion
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,8 +48,8 @@ public class CotizacionItem {
     public void setIdItem(Long idItem) { this.idItem = idItem; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
-    public Integer getPrecioItemCalculado() { return precioItemCalculado; }
-    public void setPrecioItemCalculado(Integer precioItemCalculado) { this.precioItemCalculado = precioItemCalculado; }
+    public Long getPrecioItemCalculado() { return precioItemCalculado; }
+    public void setPrecioItemCalculado(Long precioItemCalculado) { this.precioItemCalculado = precioItemCalculado; }
     public Cotizacion getCotizacion() { return cotizacion; }
     public void setCotizacion(Cotizacion cotizacion) { this.cotizacion = cotizacion; }
     public Mueble getMueble() { return mueble; }

@@ -69,16 +69,29 @@
 
                             <td>
                                 <div style="display: flex; gap: 5px;">
-                                    <a th:href="@{/admin/muebles/editar/{id}(id=${m.idMueble})}" class="btn btn-secondary" style="padding: 0.4rem;" title="Editar">
+                                    
+                                    <a th:href="@{/admin/muebles/editar/{id}(id=${m.idMueble})}" 
+                                    class="btn btn-secondary" style="padding: 0.4rem;" title="Editar">
                                         <i class="ph-bold ph-pencil-simple"></i>
                                     </a>
+
                                     <a th:if="${m.estado == 'activo'}" 
                                     th:href="@{/admin/muebles/desactivar/{id}(id=${m.idMueble})}" 
-                                    class="btn btn-outline" style="padding: 0.4rem; border-color: var(--color-error); color: var(--color-error);" 
-                                    title="Desactivar"
-                                    onclick="return confirm('¿Seguro que desea desactivar este mueble?');">
-                                        <i class="ph-bold ph-trash"></i>
+                                    class="btn btn-outline" 
+                                    style="padding: 0.4rem; border-color: #d32f2f; color: #d32f2f;" 
+                                    title="Desactivar (Ocultar)"
+                                    onclick="return confirm('¿Desactivar este mueble? Dejará de aparecer en el catálogo.');">
+                                        <i class="ph-bold ph-eye-slash"></i>
                                     </a>
+
+                                    <a th:if="${m.estado == 'inactivo'}" 
+                                    th:href="@{/admin/muebles/activar/{id}(id=${m.idMueble})}" 
+                                    class="btn btn-outline" 
+                                    style="padding: 0.4rem; border-color: var(--color-exito); color: var(--color-exito);" 
+                                    title="Reactivar (Volver a vender)">
+                                        <i class="ph-bold ph-arrow-counter-clockwise"></i>
+                                    </a>
+
                                 </div>
                             </td>
                         </tr>

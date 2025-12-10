@@ -12,9 +12,9 @@ public class VarianteDecorador extends MuebleDecorador {
     }
 
     @Override
-    public Integer getPrecio() {
-        Integer precioBase = super.getPrecio();
-        Integer precioConVariante = precioBase + this.variante.getCostoAdicional();
+    public Long getPrecio() {
+        Long precioBase = super.getPrecio();
+        Long precioConVariante = precioBase + this.variante.getCostoAdicional();
         return precioConVariante;
     }
 }

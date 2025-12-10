@@ -32,8 +32,11 @@
                     <label>Costo Adicional ($CLP)</label>
                     <div style="position: relative;">
                         <span style="position: absolute; left: 10px; top: 10px; color: #888;">$</span>
-                        <input type="number" th:field="*{costoAdicional}" required min="0" step="100" style="padding-left: 25px;" placeholder="15000" />
+                        <input type="number" th:field="*{costoAdicional}" required min="0" step="100" style="padding-left: 25px;" />
                     </div>
+                    
+                    <p th:if="${#fields.hasErrors('costoAdicional')}" th:errors="*{costoAdicional}" style="color: red; font-size: 0.9rem; margin-top: 5px;">Error en costo</p>
+                    
                     <small style="color: var(--color-text-muted); display: block; margin-top: 5px;">
                         Se sumará al precio base del mueble.
                     </small>

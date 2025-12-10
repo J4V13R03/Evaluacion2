@@ -17,7 +17,7 @@ services:
       retries: 5
       start_period: 30s
 
-  backend:
+  muebleria_hermanos:
     build: . 
     container_name: muebleria-app
     depends_on:

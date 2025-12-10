@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,7 +26,6 @@ public class CotizacionService {
     @Autowired
     private VarianteRepository varianteRepository;
 
-    // Crear una nueva cotización 
     @Transactional
     public Cotizacion crearCotizacion(CotizacionRequestDTO request) {
         
@@ -34,29 +33,36 @@ public class CotizacionService {
         cotizacion.setFecha(LocalDateTime.now());
         cotizacion.setEstado("PENDIENTE");
         
-        Integer totalGeneral = 0;
+        Long totalGeneral = 0L;
 
         for (CotizacionItemDTO itemDTO : request.items()) {
             
-            // Encuentra el Mueble base
             Mueble muebleBase = muebleRepository.findById(itemDTO.muebleId())
-                .orElseThrow(() -> new RuntimeException("Mueble no encontrado con ID: " + itemDTO.muebleId()));
+                .orElseThrow(() -> new RuntimeException("Mueble no encontrado ID: " + itemDTO.muebleId()));
 
-            // Variantes seleccionadas
-            Set<Variante> variantes = new HashSet<>(varianteRepository.findAllById(itemDTO.varianteIds()));
+            if (!"activo".equalsIgnoreCase(muebleBase.getEstado())) {
+                throw new RuntimeException("El mueble '" + muebleBase.getNombreMueble() + "' no está disponible para la venta.");
+            }
+
+            List<Variante> variantesEncontradas = varianteRepository.findAllById(itemDTO.varianteIds());
             
+            if (variantesEncontradas.size() != itemDTO.varianteIds().size()) {
+                throw new RuntimeException("Una o más variantes seleccionadas no existen o no son válidas.");
+            }
+            
+            Set<Variante> variantesSet = new HashSet<>(variantesEncontradas);
+
+            // Decorator
             Costos itemCotizable = new PrecioBuilder(muebleBase)
-                                            .conVariantes(variantes)
+                                            .conVariantes(variantesSet)
                                             .build();
 
-            // precio final del item (con variantes)
-            Integer precioUnitario = itemCotizable.getPrecio();
+            Long precioUnitario = itemCotizable.getPrecio();
             
-            // se crea cotizacion item
             CotizacionItem item = new CotizacionItem();
             item.setMueble(muebleBase);
             item.setCantidad(itemDTO.cantidad());
-            item.setVariantes(variantes);
+            item.setVariantes(variantesSet);
             item.setPrecioItemCalculado(precioUnitario * itemDTO.cantidad());
 
             cotizacion.addItem(item);
@@ -65,43 +71,37 @@ public class CotizacionService {
         }
 
         cotizacion.setTotalCalculado(totalGeneral);
-        
-        // Guardamos la cotizacion
         return cotizacionRepository.save(cotizacion);
     }
     
-    // Confirmar la venta de una cotizacion
     @Transactional
     public Cotizacion confirmarVenta(Long cotizacionId) {
-        // encuentra la cotizacion
         Cotizacion cotizacion = cotizacionRepository.findById(cotizacionId)
-            .orElseThrow(() -> new RuntimeException("Cotización no encontrada con ID: " + cotizacionId));
+            .orElseThrow(() -> new RuntimeException("Cotización no encontrada ID: " + cotizacionId));
 
-        if (!cotizacion.getEstado().equals("PENDIENTE")) {
-            throw new RuntimeException("Esta cotización ya fue procesada o está en un estado inválido.");
+        if (!"PENDIENTE".equals(cotizacion.getEstado())) {
+            throw new RuntimeException("Esta cotización ya no es válida.");
         }
 
-        // verifica stock suficiente
         for (CotizacionItem item : cotizacion.getItems()) {
             Mueble mueble = item.getMueble();
             if (mueble.getStock() < item.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para: " + mueble.getNombreMueble());
+                throw new RuntimeException("Lo sentimos, el stock de '" + mueble.getNombreMueble() + "' se ha agotado.");
             }
         }
 
-        // descuenta stock si hay suficiente
+        // Descontar stock
         for (CotizacionItem item : cotizacion.getItems()) {
             Mueble mueble = item.getMueble();
-            int nuevoStock = mueble.getStock() - item.getCantidad();
-            mueble.setStock(nuevoStock);
-            muebleRepository.save(mueble); // actualizamos el stock del mueble en la BD
+            mueble.setStock(mueble.getStock() - item.getCantidad());
+            muebleRepository.save(mueble);
         }
 
         cotizacion.setEstado("VENDIDO");
         return cotizacionRepository.save(cotizacion);
     }
     
-    public Optional<Cotizacion> obtenerCotizacionPorId(Long id) {
+    public java.util.Optional<Cotizacion> obtenerCotizacionPorId(Long id) {
         return cotizacionRepository.findById(id);
     }
 }

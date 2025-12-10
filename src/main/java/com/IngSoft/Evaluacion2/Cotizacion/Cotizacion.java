@@ -20,7 +20,7 @@ public class Cotizacion {
     private String estado; 
 
     @Column(nullable = false)
-    private Integer totalCalculado;
+    private Long totalCalculado;
 
     // Una Cotización tiene muchos Items
     @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -33,8 +33,8 @@ public class Cotizacion {
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
-    public Integer getTotalCalculado() { return totalCalculado; }
-    public void setTotalCalculado(Integer totalCalculado) { this.totalCalculado = totalCalculado; }
+    public Long getTotalCalculado() { return totalCalculado; }
+    public void setTotalCalculado(Long totalCalculado) { this.totalCalculado = totalCalculado; }
     public List<CotizacionItem> getItems() { return items; }
     public void setItems(List<CotizacionItem> items) { this.items = items; }
 

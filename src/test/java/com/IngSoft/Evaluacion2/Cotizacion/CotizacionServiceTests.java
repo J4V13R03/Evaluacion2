@@ -37,15 +37,15 @@ public class CotizacionServiceTests {
     public void testCrearCotizacion_CalculaPrecioConVariantes() {
         Mueble muebleBase = new Mueble();
         muebleBase.setIdMueble(1L);
-        muebleBase.setPrecioBase(100000); 
+        muebleBase.setPrecioBase(100000L); 
 
         Variante v1 = new Variante();
         v1.setIdVariante(1L);
-        v1.setCostoAdicional(20000); 
+        v1.setCostoAdicional(20000L); 
 
         Variante v2 = new Variante();
         v2.setIdVariante(2L);
-        v2.setCostoAdicional(30000);
+        v2.setCostoAdicional(30000L);
 
         CotizacionItemDTO itemDTO = new CotizacionItemDTO(1L, 1, List.of(1L, 2L));
         CotizacionRequestDTO requestDTO = new CotizacionRequestDTO(List.of(itemDTO));

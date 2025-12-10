@@ -11,7 +11,7 @@ public class MuebleCotizado implements Costos {
     }
 
     @Override
-    public Integer getPrecio() {
+    public Long getPrecio() {
         return this.mueble.getPrecioBase();
     }
 }

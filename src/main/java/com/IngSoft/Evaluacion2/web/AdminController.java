@@ -5,9 +5,13 @@ import com.IngSoft.Evaluacion2.Mueble.MuebleService;
 import com.IngSoft.Evaluacion2.Variante.Variante;
 import com.IngSoft.Evaluacion2.Variante.VarianteService;
 import com.IngSoft.Evaluacion2.Cotizacion.CotizacionRepository;
+
+import javax.naming.Binding;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -29,7 +33,7 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    // --- GESTIÓN DE MUEBLES ---
+    // gestión de muebles
 
     @GetMapping("/muebles")
     public String listarMuebles(Model model) {
@@ -51,8 +55,19 @@ public class AdminController {
         return "admin/muebles/muebles-form";
     }
 
+    @GetMapping("/muebles/activar/{id}")
+    public String activarMueble(@PathVariable Long id) {
+        muebleService.activarMueble(id);
+        return "redirect:/admin/muebles";
+    }
+
     @PostMapping("/muebles/guardar")
-    public String guardarMueble(@ModelAttribute Mueble mueble) {
+    public String guardarMueble(@ModelAttribute Mueble mueble, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            // Si falla, volvemos al formulario para mostrar el error
+            return "admin/muebles/muebles-form"; 
+        }
+
         if (mueble.getIdMueble() != null) {
             muebleService.actualizarMueble(mueble.getIdMueble(), mueble);
         } else {
@@ -90,7 +105,11 @@ public class AdminController {
     }
 
     @PostMapping("/variantes/guardar")
-    public String guardarVariante(@ModelAttribute Variante variante) {
+    public String guardarVariante(@ModelAttribute Variante variante, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "admin/variantes/variantes-form";
+        }
+
         varianteService.crearVariante(variante);
         return "redirect:/admin/variantes";
     }

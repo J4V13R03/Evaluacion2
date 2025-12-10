@@ -9,7 +9,7 @@ public abstract class MuebleDecorador implements Costos {
     }
 
     @Override
-    public Integer getPrecio() {
+    public Long getPrecio() {
         return muebleEnvuelto.getPrecio();
     }
 }

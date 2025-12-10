@@ -19,7 +19,7 @@ public class Mueble {
     private String tipo;
 
     @Column(nullable = false)
-    private Integer precioBase;
+    private Long precioBase;
 
     @Column(nullable = false)
     private Integer stock;
@@ -44,8 +44,8 @@ public class Mueble {
     public void setNombreMueble(String nombreMueble) { this.nombreMueble = nombreMueble; }
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
-    public Integer getPrecioBase() { return precioBase; }
-    public void setPrecioBase(Integer precioBase) { this.precioBase = precioBase; }
+    public Long getPrecioBase() { return precioBase; }
+    public void setPrecioBase(Long precioBase) { this.precioBase = precioBase; }
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
     public String getEstado() { return estado; }

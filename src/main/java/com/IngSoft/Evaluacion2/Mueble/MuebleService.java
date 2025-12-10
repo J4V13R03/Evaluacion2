@@ -12,23 +12,22 @@ public class MuebleService {
     @Autowired
     private MuebleRepository muebleRepository;
 
-    // create
+    // crear
     public Mueble crearMueble(Mueble mueble) {
         mueble.setEstado("activo");
         return muebleRepository.save(mueble);
     }
 
-    // read muebles
+    // leer
     public List<Mueble> obtenerTodosLosMuebles() {
         return muebleRepository.findAll();
     }
 
-    // read mueble por id
     public Optional<Mueble> obtenerMueblePorId(Long id) {
         return muebleRepository.findById(id);
     }
 
-    // update
+    // actualizar
     public Mueble actualizarMueble(Long id, Mueble muebleActualizado) {
         return muebleRepository.findById(id)
             .map(mueble -> {
@@ -44,7 +43,7 @@ public class MuebleService {
             .orElse(null); 
     }
 
-    // deactivate
+    // deactivar
     public Mueble desactivarMueble(Long id) {
         return muebleRepository.findById(id)
             .map(mueble -> {
@@ -52,5 +51,12 @@ public class MuebleService {
                 return muebleRepository.save(mueble);
             })
             .orElse(null);
+    }
+    // activar
+    public void activarMueble(Long id) {
+        muebleRepository.findById(id).ifPresent(mueble -> {
+            mueble.setEstado("activo");
+            muebleRepository.save(mueble);
+        });
     }
 }
